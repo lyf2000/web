@@ -6,4 +6,4 @@ Install dependencies: `pip install -r reqs.txt`
 
 ### Launch
 
-Start up backend: `cd api && uvicorn main:app --port 80 --reload --reload-include \*.py`
+Start up backend: `cd api && uvicorn main:app --port 80 --reload --reload-dir .
