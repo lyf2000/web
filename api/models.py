@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from db import Base, SessionLocal, get_db
+from db import Base, SessionLocal
 
 
 class User(Base):
@@ -38,6 +38,7 @@ def create_table_users():
     session.close()
 
 
+# create_table_users()
 # session = SessionLocal()
 # print(session.query(User).all())  # []
 
@@ -71,3 +72,15 @@ def create_user():
 
 # session = SessionLocal()
 # print(session.query(User).all())  # [User]
+
+# session = SessionLocal()
+# with session.begin():
+#     session.query(User).delete()  # delete all users
+#     assert len(session.query(User).all()) == 0
+
+#     user = User(id=1, email="efgdff")
+#     session.add(user)
+#     session.commit()
+
+#     assert len(session.query(User).all()) == 1
+#     session.rollback()
