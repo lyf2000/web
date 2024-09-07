@@ -1,7 +1,7 @@
 ### Prepare
 
 Setup venv: `python -m venv venv`
-Install dependencies: `pip install -r reqs.txt`
+Install dependencies: `pip install -r requirements.txt`
 
 
 ### Launch
