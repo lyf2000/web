@@ -1,22 +1,32 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
+from sqlalchemy import select
 
-from db import SessionLocal
+from db import SessionDep
 from models import User
-from schema import UserSchema
+from crud import create_user as create_user_db
+from schema import UserIn, UserOut
 
 
 app = FastAPI()
 
 
 @app.get("/")
-async def index(request: Request):
+async def index():
     return {}
 
 
 @app.get("/users")
-async def users(request: Request) -> list[UserSchema]:
+async def users(session: SessionDep) -> list[UserOut]:
     """user list"""
+    users = select(User)
+    users = session.execute(users).scalars().all()
+    print(users)
+    return [UserOut.model_validate(user) for user in users]
 
-    session = SessionLocal()
-    with session.begin():
-        return [UserSchema(id=user.id, email=user.email) for user in session.query(User).all()]
+
+@app.post("/users")
+async def create_user(session: SessionDep, user: UserIn) -> UserOut:
+    """create user"""
+    user = User(**user.model_dump())
+    create_user_db(session, user)
+    return UserOut.model_validate(user)

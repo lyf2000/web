@@ -1,6 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
-class UserSchema(BaseModel):
-    id: int
+class SqlSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserBaseSchema(SqlSchema):
     email: str
+
+
+class UserIn(UserBaseSchema):
+    pass
+
+
+class UserOut(UserBaseSchema):
+    id: int
