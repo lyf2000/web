@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 
 class SqlSchema(BaseModel):
@@ -6,7 +6,7 @@ class SqlSchema(BaseModel):
 
 
 class UserBaseSchema(SqlSchema):
-    email: str
+    email: EmailStr
 
 
 class UserIn(UserBaseSchema):
