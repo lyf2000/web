@@ -39,6 +39,15 @@ async def form_post_create_user(request: Request, session: SessionDep):
     return RedirectResponse(url=f"/?new_user_id={user.id}", status_code=status.HTTP_303_SEE_OTHER)
 
 
+@app.get("/users/{user_id}", response_class=HTMLResponse)
+async def user_detail(request: Request, user_id: int, session: SessionDep):
+    user = get_user_by_id(session, user_id)
+    if not user:
+        raise HTTPException(detail="User not found", status_code=404)
+
+    return templates.TemplateResponse("users/detail.html", context={"request": request, "user": user})
+
+
 # api
 @app.get("/api/users")
 async def users(session: SessionDep) -> list[UserOut]:
