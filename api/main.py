@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Form, status
 from fastapi.exceptions import HTTPException
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 
 from db import SessionDep
 from models import User
@@ -13,15 +15,32 @@ from crud import (
 from schema import UserIn, UserOut
 
 
+templates = Jinja2Templates(directory="templates/")
+
 app = FastAPI()
 
 
-@app.get("/")
-async def index():
-    return {}
+# forms
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request, session: SessionDep, new_user_id=None):
+    user = None
+    if new_user_id:
+        user = get_user_by_id(session, new_user_id)
+    return templates.TemplateResponse("index.html", context={"request": request, "user_created": user})
 
 
-@app.get("/users")
+@app.post("/", response_class=HTMLResponse)
+async def form_post_create_user(request: Request, session: SessionDep):
+    async with request.form() as form:
+        email = form["email"]
+        user = User(email=email)
+        user = create_user_db(session, user)
+
+    return RedirectResponse(url=f"/?new_user_id={user.id}", status_code=status.HTTP_303_SEE_OTHER)
+
+
+# api
+@app.get("/api/users")
 async def users(session: SessionDep) -> list[UserOut]:
     """user list"""
     users = get_users(session)
@@ -29,7 +48,7 @@ async def users(session: SessionDep) -> list[UserOut]:
     return [UserOut.model_validate(user) for user in users]
 
 
-@app.get("/users/{user_id}")
+@app.get("/api/users/{user_id}")
 async def get_user(session: SessionDep, user_id: int) -> UserOut:
     """get user"""
     user = get_user_by_id(session, user_id)
@@ -39,7 +58,7 @@ async def get_user(session: SessionDep, user_id: int) -> UserOut:
     return UserOut.model_validate(user)
 
 
-@app.post("/users")
+@app.post("/api/users")
 async def create_user(session: SessionDep, user: UserIn) -> UserOut:
     """create user"""
     user = User(**user.model_dump())
@@ -47,7 +66,7 @@ async def create_user(session: SessionDep, user: UserIn) -> UserOut:
     return UserOut.model_validate(user)
 
 
-@app.put("/users/{user_id}")
+@app.put("/api/users/{user_id}")
 async def update_user(session: SessionDep, user_id: int, user_in: UserIn) -> UserOut:
     """update user"""
     user = get_user_by_id(session, user_id)
@@ -58,7 +77,7 @@ async def update_user(session: SessionDep, user_id: int, user_in: UserIn) -> Use
     return UserOut.model_validate(user)
 
 
-@app.delete("/users/{user_id}")
+@app.delete("/api/users/{user_id}")
 async def delete_user(session: SessionDep, user_id: int):
     """update user"""
     user = get_user_by_id(session, user_id)
