@@ -12,6 +12,11 @@ def create_user(session: Session, user: User) -> User:
     return user
 
 
+def get_users(session: Session) -> list[User]:
+    statement = select(User)
+    return session.execute(statement).scalars().all()
+
+
 def get_user_by_id(session: Session, user_id: int) -> User | None:
     statement = select(User).filter(User.id == user_id).limit(1)
     return session.execute(statement).scalars().one_or_none()
@@ -23,3 +28,8 @@ def update_user(session: Session, user: User, user_in: UserIn) -> User:
     session.commit()
 
     return user
+
+
+def delete_user(session: Session, user: User):
+    session.delete(user)
+    session.commit()
