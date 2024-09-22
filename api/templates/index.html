@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample Form</title>
+</head>
+<body>
+<form method="post">
+    <input type="email" name="email" placeholder="Email" value="@mail.ru"/>
+    <br>
+    <input type="submit">
+</form>
+
+<br>
+<br>
+{% if user_created %}
+{{user_created.id}}, {{user_created.email}}
+{% else %}
+bruuuh
+{% endif %}
+
+</body>
+</html>
