@@ -127,3 +127,34 @@ def create_user():
 
 #     assert len(session.query(User).all()) == 1
 #     session.rollback()
+
+
+
+
+# Поясняшка за primary key
+# class Group(Base):
+#     id
+
+# class Subscribtion(Base):
+#     __tablename__ = 'subscriptions'
+#     user_id = Column(Integer, ForeignKey("users.id"))
+#     group_id = Column(Integer, ForeignKey("groups.id"))
+#     date_joined = Column(DateTime)
+
+#     __table_args__ = (
+#         sqlalchemy.PrimaryKeyConstraint('user_id', 'group_id'),
+#     )
+
+#     [
+#         Subscribtion(user_id=1, group_id=1), # PrimaryKeyConstraint (1, 1)
+#         Subscribtion(user_id=1, group_id=2), # PrimaryKeyConstraint (1, 2)
+#         Subscribtion(user_id=2, group_id=1), # PrimaryKeyConstraint (2, 1)
+#         Subscribtion(user_id=2, group_id=1), # PrimaryKeyConstraint (2, 1)  # ошибка
+#     ]
+# insert into subscriptions (user_id, group_id) values (1, 1)
+# insert into subscriptions (user_id, group_id) values (1, 2)
+# insert into subscriptions (user_id, group_id) values (2, 1)
+# insert into subscriptions (user_id, group_id) values (2, 1)  # ошибка
+
+# class User:
+#     id
