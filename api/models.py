@@ -2,6 +2,14 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from db import Base, SessionLocal
+# def get_sqlite_version():
+#     session = SessionLocal()
+#     from sqlalchemy import text
+
+#     sql = text("SELECT sqlite_version();")
+#     result = session.execute(sql).fetchone()
+#     session.close()
+#     return result[0]
 
 
 class User(Base):
@@ -13,12 +21,12 @@ class User(Base):
     # items = relationship("Item", back_populates="owner")
 
 
-# class Item(Base):
-#     __tablename__ = "items"
+class Book(Base):
+    __tablename__ = "books"
 
-#     id = Column(Integer, primary_key=True)
-#     title = Column(String, index=True)
-# owner_id = Column(Integer, ForeignKey("users.id"))
+    id = Column(Integer, primary_key=True)
+    title = Column(String)
+    author_id = Column(Integer, ForeignKey("users.id"))
 
 # owner = relationship("User", back_populates="items")
 
@@ -34,11 +42,28 @@ def create_table_users():
         PRIMARY KEY(id)
     )"""
     )
+    # CHECK(email LIKE '%_@__%.__%'),
     session.execute(sql)
     session.close()
 
+def create_table_books():
+    session = SessionLocal()
+    from sqlalchemy import text
+
+    sql = text(
+        """CREATE TABLE books (
+        id INTEGER,
+        title TEXT,
+        author_id INTEGER,
+        FOREIGN KEY(author_id) REFERENCES users(id) ON DELETE CASCADE,
+        PRIMARY KEY(id)
+    )"""
+    )
+    session.execute(sql)
+    session.close()
 
 # create_table_users()
+# create_table_books()
 # session = SessionLocal()
 # print(session.query(User).all())  # []
 
@@ -48,13 +73,31 @@ def create_table_users():
 
 def create_user():
     session = SessionLocal()
-    user = User(id=1, email="efgdff")
+    user = User(email="efgdff")
 
     session.add(user)
+    session.commit()
 
+def create_book():
+    session = SessionLocal()
+    book = Book(title="efgdff", author_id=1)
+
+    session.add(book)
+    session.commit()
 
 # create_user()  # no error, but not created
+# create_book()
 
+
+def remove_user(user_id: int):
+    session = SessionLocal()
+    user = session.query(User).filter(User.id == user_id).first()
+    if user:
+        session.delete(user)
+        session.commit()
+    session.close()
+
+remove_user(1)
 
 # session = SessionLocal()
 # print(session.query(User).all())  # []
