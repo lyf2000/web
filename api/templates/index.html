@@ -41,7 +41,7 @@
                 userList.innerHTML = ''; // Clean the list before appending new items
                 data.forEach(user => {
                     const listItem = document.createElement('li');
-                    listItem.textContent = user.email; // Adjust based on your API response structure
+                    listItem.textContent = user.email + '    ' + user.id; // Adjust based on your API response structure
                     userList.appendChild(listItem);
                 });
             })
