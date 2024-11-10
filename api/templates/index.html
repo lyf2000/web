@@ -7,12 +7,14 @@
 </head>
 
 <body>
-    <form method="post">
-        <input type="email" name="email" placeholder="Email" value="@mail.ru" />
-        <br>
-        <input type="submit">
-    </form>
 
+    <form id="myForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    `
     <br>
     <br>
     <h1>User List</h1>
@@ -23,25 +25,62 @@
 
 
 <script>
-    // Fetch user list from API
-    fetch('http://0.0.0.0/api/users') // Replace with your API endpoint
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const userList = document.getElementById('user-list');
-            data.forEach(user => {
-                const listItem = document.createElement('li');
-                listItem.textContent = user.email; // Adjust based on your API response structure
-                userList.appendChild(listItem);
+
+    function load_users() {
+
+        // Fetch user list from API
+        fetch('http://0.0.0.0/api/users') // Replace with your API endpoint
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const userList = document.getElementById('user-list');
+                userList.innerHTML = ''; // Clean the list before appending new items
+                data.forEach(user => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = user.email; // Adjust based on your API response structure
+                    userList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
             });
+    }
+    load_users();
+
+    document.getElementById('myForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Create a JSON object from the form data
+        const formData = {
+            email: document.getElementById('email').value
+        };
+
+        // Post the JSON data to the API
+        fetch('http://0.0.0.0/api/users', { // Replace with your API endpoint
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // Set the content type to JSON
+            },
+            body: JSON.stringify(formData) // Convert the object to a JSON string
         })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                load_users()
+                // Handle success (e.g., show a message to the user)
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    });
 </script>
 
 </html>
