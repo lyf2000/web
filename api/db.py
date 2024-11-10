@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./api/sql_app.db"  # будет создан файл в корне проекта
+SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"  # будет создан файл в корне проекта
 # SQLALCHEMY_DATABASE_URL = "postgresql://user:password@localhost:3456/db"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)

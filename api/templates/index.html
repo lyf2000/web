@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Sample Form</title>
 </head>
-<body>
-<form method="post">
-    <input type="email" name="email" placeholder="Email" value="@mail.ru"/>
-    <br>
-    <input type="submit">
-</form>
 
-<br>
-<br>
-{% if user_created %}
-{{user_created.id}}, {{user_created.email}}
-{% else %}
-bruuuh
-{% endif %}
+<body>
+    <form method="post">
+        <input type="email" name="email" placeholder="Email" value="@mail.ru" />
+        <br>
+        <input type="submit">
+    </form>
+
+    <br>
+    <br>
+    <h1>User List</h1>
+    <ul id="user-list"></ul>
 
 </body>
+
+
+
+<script>
+    // Fetch user list from API
+    fetch('http://0.0.0.0/api/users') // Replace with your API endpoint
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const userList = document.getElementById('user-list');
+            data.forEach(user => {
+                const listItem = document.createElement('li');
+                listItem.textContent = user.email; // Adjust based on your API response structure
+                userList.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+</script>
+
 </html>
